@@ -16,4 +16,4 @@ If you don't want to use the `ox_lib` Skillbar then remove it from `fxmanifest.l
 ## Requirements
 * [ESX 1.2 and above](https://github.com/esx-framework/esx_core) or [QBCore](https://github.com/qbcore-framework)
 * [datacrack by utkuali](https://github.com/utkuali/datacrack)
-* [ox_lib](https://github.com/overextended/ox_lib) - *Only for ESX*
+* [ox_lib](https://github.com/overextended/ox_lib)
