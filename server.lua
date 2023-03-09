@@ -48,13 +48,24 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
 
     if not Config.useDoorlock then return end
 
+    local doorlockScript = Config.DoorlockScript
+    if not doorlockScript then
+        print('No doorlock script specified in config.')
+        return
+    end
+
+    if not doesResourceExist(doorlockScript) then
+        print('Doorlock script ' .. doorlockScript .. ' not found')
+        return
+    end
+
     if state then -- If Blackout is enabled
-        if Config.DoorlockScript:match('doors_creator') then
+        if doorlockScript:match('doors_creator') then
             local doors = exports["doors_creator"]:getAllDoors()
             for k, doorData in pairs(doors) do
                 exports["doors_creator"]:setDoorState(doorData.id, 0)
             end
-        elseif Config.DoorlockScript:match('ox_doorlock') then
+        elseif doorlockScript:match('ox_doorlock') then
             MySQL.query('SELECT id FROM ox_doorlock', {}, function(result)
                 if result then
                     for i = 1, #result do
@@ -63,14 +74,16 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
                     end
                 end
             end)
+        else
+            print('Unsupported doorlock script: ' .. doorlockScript)
         end
     elseif not state then -- If Blackout is disabled
-        if Config.DoorlockScript:match('doors_creator') then
+        if doorlockScript:match('doors_creator') then
             local doors = exports["doors_creator"]:getAllDoors()
             for k, doorData in pairs(doors) do
                 exports["doors_creator"]:setDoorState(doorData.id, 1)
             end
-        elseif Config.DoorlockScript:match('ox_doorlock') then
+        elseif doorlockScript:match('ox_doorlock') then
             MySQL.query('SELECT id FROM ox_doorlock', {}, function(result)
                 if result then
                     for i = 1, #result do
@@ -79,6 +92,8 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
                     end
                 end
             end)
+        else
+            print('Unsupported doorlock script: ' .. doorlockScript)
         end
     end
 end)
