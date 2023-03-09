@@ -16,7 +16,8 @@ end
 Config.Framework = 'ESX' -- 'ESX' or 'QBCore'
 Config.Hotkey = 38 -- deafult: 38 = E
 ----------------------------------------------------------------
-Config.useDoorsCreator = false -- Set to true if you use Jaksams Doors Creator and want to unlock all Doors while blackout
+Config.useDoorlock = false -- Set to true if you want to unlock all Doors while blackout
+Config.DoorlockScript = 'doors_creator' -- 'doors_creator' or 'ox_doorlock'
 ----------------------------------------------------------------
 Config.Blackout = {
     generalLights = true, -- Set to true turns off all artificial light sources in the map
@@ -26,9 +27,7 @@ Config.Blackout = {
 }
 
 Config.useWeatherScript = true -- Set false the Blackout does not work and add your Event below
-Config.weatherScript = function(state)
-    -- This is a Server Event
-
+Config.weatherScript = function(state) -- This is a Server Event
     TriggerClientEvent('vSync:updateWeather', -1, 'CLEAR', state) -- vSync
     --exports["qb-weathersync"]:setBlackout(state) -- qb-weathersync
 end

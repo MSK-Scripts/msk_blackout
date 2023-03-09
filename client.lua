@@ -57,9 +57,12 @@ CreateThread(function()
 				MSK.HelpNotification(Translation[Config.Locale]['open_blackout'])
 
 				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.Table_Contains(Config.blacklistedJobs.jobs, playerJob)) then
-					local OnlineCops = MSK.TriggerCallback('msk_blackout:getCops')
+					local OnlineCops = 0
+					if Config.Cops.enable then
+						OnlineCops = MSK.TriggerCallback('msk_blackout:getCops')
+					end
 
-					if OnlineCops >= Config.Cops.amount then
+					if not Config.Cops.enable or (Config.Cops.enable and OnlineCops >= Config.Cops.amount) then
 						if Config.SkillCheck.animation.enable then
 							RequestAnimDict(Config.SkillCheck.animation.dict)
 							while not HasAnimDictLoaded(Config.SkillCheck.animation.dict) do

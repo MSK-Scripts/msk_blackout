@@ -46,15 +46,39 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
     end
     TriggerClientEvent('msk_blackout:setBlackout', -1, state)
 
-    if Config.useDoorsCreator and state then
-        local doors = exports["doors_creator"]:getAllDoors()
-        for k, doorData in pairs(doors) do
-            exports["doors_creator"]:setDoorState(doorData.id, 0)
+    if not Config.useDoorlock then return end
+
+    if state then -- If Blackout is enabled
+        if Config.DoorlockScript:match('doors_creator') then
+            local doors = exports["doors_creator"]:getAllDoors()
+            for k, doorData in pairs(doors) do
+                exports["doors_creator"]:setDoorState(doorData.id, 0)
+            end
+        elseif Config.DoorlockScript:match('ox_doorlock') then
+            MySQL.query('SELECT id FROM ox_doorlock', {}, function(result)
+                if result then
+                    for i = 1, #result do
+                        local door = exports.ox_doorlock:getDoor(result[i].id)
+                        TriggerEvent('ox_doorlock:setState', door.id, 0)
+                    end
+                end
+            end)
         end
-    elseif Config.useDoorsCreator and not state then
-        local doors = exports["doors_creator"]:getAllDoors()
-        for k, doorData in pairs(doors) do
-            exports["doors_creator"]:setDoorState(doorData.id, 1)
+    elseif not state then -- If Blackout is disabled
+        if Config.DoorlockScript:match('doors_creator') then
+            local doors = exports["doors_creator"]:getAllDoors()
+            for k, doorData in pairs(doors) do
+                exports["doors_creator"]:setDoorState(doorData.id, 1)
+            end
+        elseif Config.DoorlockScript:match('ox_doorlock') then
+            MySQL.query('SELECT id FROM ox_doorlock', {}, function(result)
+                if result then
+                    for i = 1, #result do
+                        local door = exports.ox_doorlock:getDoor(result[i].id)
+                        TriggerEvent('ox_doorlock:setState', door.id, 1)
+                    end
+                end
+            end)
         end
     end
 end)
