@@ -15,9 +15,9 @@ If you don't want to use the `ox_lib` Skillbar then remove it from `fxmanifest.l
 
 ## Requirements
 * [ESX 1.2 and above](https://github.com/esx-framework/esx_core) or [QBCore](https://github.com/qbcore-framework)
-* [datacrack by utkuali](https://github.com/utkuali/datacrack)
-* [ox_lib](https://github.com/overextended/ox_lib)
-* [msk_core](https://github.com/MSK-Scripts/msk_core)
+* * [msk_core](https://github.com/MSK-Scripts/msk_core)
+* [datacrack by utkuali](https://github.com/utkuali/datacrack) - *Hacking Minigame*
+* [ox_lib](https://github.com/overextended/ox_lib) - *Skillbar*
 
 ## Optional Requirements
 * [doors_creator by Jaksam](https://www.jaksam-scripts.com/) - *To unlock all doors while blackout*
