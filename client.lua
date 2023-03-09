@@ -349,12 +349,16 @@ stopBlackout = function()
 	TriggerServerEvent('msk_blackout:syncBlackout', false)
 end
 
+RegisterCommand('blackouton', function(source, args, raw)
+	stopBlackoutTask(true)
+end)
+
 RegisterNetEvent('msk_blackout:setBlackout')
 AddEventHandler('msk_blackout:setBlackout', function(state)
 	setBlackout = state
 
 	if state then
-		addTimeout = MSK.AddTimeout(Config.Blackout.duraction * 60000, function()
+		addTimeout = MSK.AddTimeout(Config.Blackout.duration * 60000, function()
 			stopBlackout()
 			MSK.DelTimeout(addTimeout)
 		end)
