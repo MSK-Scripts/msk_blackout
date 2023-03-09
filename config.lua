@@ -16,6 +16,8 @@ end
 Config.Framework = 'ESX' -- 'ESX' or 'QBCore'
 Config.Hotkey = 38 -- deafult: 38 = E
 ----------------------------------------------------------------
+Config.useDoorsCreator = false -- Set to true if you use Jaksams Doors Creator and want to unlock all Doors while blackout
+----------------------------------------------------------------
 Config.Blackout = {
     generalLights = true, -- Set to true turns off all artificial light sources in the map
     vehicleLights = true, -- Set to false ignores Vehicles

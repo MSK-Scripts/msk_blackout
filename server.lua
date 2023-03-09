@@ -45,6 +45,18 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
         Config.weatherScript(state)
     end
     TriggerClientEvent('msk_blackout:setBlackout', -1, state)
+
+    if Config.useDoorsCreator and state then
+        local doors = exports["doors_creator"]:getAllDoors()
+        for k, doorData in pairs(doors) do
+            exports["doors_creator"]:setDoorState(doorData.id, 0)
+        end
+    elseif Config.useDoorsCreator and not state then
+        local doors = exports["doors_creator"]:getAllDoors()
+        for k, doorData in pairs(doors) do
+            exports["doors_creator"]:setDoorState(doorData.id, 1)
+        end
+    end
 end)
 
 logging = function(code, ...)
