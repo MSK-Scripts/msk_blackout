@@ -4,6 +4,8 @@ Weather Blackout Miniheist
 ## Description
 It's a little Blackout Miniheist for ESX and QBCore.
 
+CFX Forum: https://forum.cfx.re/t/esx-qbcore-msk-blackout-weather-blackout-miniheist/5041917
+
 Preview: https://streamable.com/mzvoe5
 
 ## Installation
