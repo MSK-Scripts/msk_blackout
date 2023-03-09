@@ -33,6 +33,12 @@ Config.weatherScript = function(state)
     --exports["qb-weathersync"]:setBlackout(state) -- qb-weathersync
 end
 ----------------------------------------------------------------
+Config.Cops = {
+    enable = true,
+    jobs = {'police', 'fib', 'sheriff'},
+    amount = 2 -- Minimum amount of Online Players with Police Job
+}
+
 Config.blacklistedJobs = {
     enable = true, -- Set false if you don't want to blacklist any job
     jobs = {'police', 'fib', 'sheriff'}

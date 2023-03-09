@@ -59,6 +59,34 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
     end
 end)
 
+MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
+    local OnlineCops = 0
+
+    if Config.Framework:match('ESX') then
+        local xPlayers = ESX.GetPlayers()
+
+        for i = 1, #xPlayers do
+            local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+
+            if MSK.Table_Contains(Config.Cops.jobs, xPlayer.job.name) then
+                OnlineCops = OnlineCops + 1
+            end
+        end
+    elseif Config.Framework:match('QBCore') then
+        local Players = QBCore.Functions.GetQBPlayers()
+
+        for i = 1, #Players do
+            local Player = QBCore.Functions.GetPlayer(Players[i])
+
+            if MSK.Table_Contains(Config.Cops.jobs, Player.PlayerData.job.name) then
+                OnlineCops = OnlineCops + 1
+            end
+        end
+    end
+
+    cb(OnlineCops)
+end)
+
 logging = function(code, ...)
     if Config.Debug then
         local script = "[^2"..GetCurrentResourceName().."^0]"

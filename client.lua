@@ -56,39 +56,45 @@ CreateThread(function()
 			if dist <= 2.5 and not IsPlayerDead(PlayerId()) and not startedBlackout then
 				MSK.HelpNotification(Translation[Config.Locale]['open_blackout'])
 
-				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.Table_Contains(Config.blacklistedJobs.jobs, playerJob)) then					
-					if Config.SkillCheck.animation.enable then
-						RequestAnimDict(Config.SkillCheck.animation.dict)
-						while not HasAnimDictLoaded(Config.SkillCheck.animation.dict) do
-							Wait(0)
+				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.Table_Contains(Config.blacklistedJobs.jobs, playerJob)) then
+					local OnlineCops = MSK.TriggerCallback('msk_blackout:getCops')
+
+					if OnlineCops >= Config.Cops.amount then
+						if Config.SkillCheck.animation.enable then
+							RequestAnimDict(Config.SkillCheck.animation.dict)
+							while not HasAnimDictLoaded(Config.SkillCheck.animation.dict) do
+								Wait(0)
+							end
+							TaskPlayAnim(playerPed, Config.SkillCheck.animation.dict, Config.SkillCheck.animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 						end
-						TaskPlayAnim(playerPed, Config.SkillCheck.animation.dict, Config.SkillCheck.animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
-					end
 
-					local success = false
-					if Config.Skillbar:match('oxlib') then
-						success = lib.skillCheck({Config.SkillCheck.difficulty['1'], Config.SkillCheck.difficulty['2'], {areaSize = 60, speedMultiplier = 2}, Config.SkillCheck.difficulty['3']}, Config.SkillCheck.inputs)
-					elseif Config.Skillbar:match('qbcore') then
-						local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
-						Skillbar.Start({
-							duration = math.random(1000, 5000), -- how long the skillbar runs for
-							pos = math.random(10, 30), -- how far to the right the static box is
-							width = math.random(10, 20), -- how wide the static box is
-						}, function()
-							success = true
-						end, function()
-							success = false
-						end)
-					end
+						local success = false
+						if Config.Skillbar:match('oxlib') then
+							success = lib.skillCheck({Config.SkillCheck.difficulty['1'], Config.SkillCheck.difficulty['2'], {areaSize = 60, speedMultiplier = 2}, Config.SkillCheck.difficulty['3']}, Config.SkillCheck.inputs)
+						elseif Config.Skillbar:match('qbcore') then
+							local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
+							Skillbar.Start({
+								duration = math.random(1000, 5000), -- how long the skillbar runs for
+								pos = math.random(10, 30), -- how far to the right the static box is
+								width = math.random(10, 20), -- how wide the static box is
+							}, function()
+								success = true
+							end, function()
+								success = false
+							end)
+						end
 
-					if Config.SkillCheck.animation.enable then
-						RemoveAnimDict(Config.SkillCheck.animation.dict)
-						ClearPedTasks(playerPed)
-					end
+						if Config.SkillCheck.animation.enable then
+							RemoveAnimDict(Config.SkillCheck.animation.dict)
+							ClearPedTasks(playerPed)
+						end
 
-					if success then
-						startedBlackout = true
-						blackoutTeleport()
+						if success then
+							startedBlackout = true
+							blackoutTeleport()
+						end
+					else
+						Config.Notification(nil, Translation[Config.Locale]['no_online_cops'])
 					end
 				end
 			end

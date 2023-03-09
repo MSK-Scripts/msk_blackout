@@ -3,6 +3,7 @@ Translation = {}
 Translation = {
     ['de'] = {
         ['open_blackout'] = 'Drücke ~g~E~s~ um den Blackout zu starten',
+        ['no_online_cops'] = 'Es sind nicht genügend Cops im Dienst.',
         ['door_success_skillcheck'] = 'Hacke den Laptop um das Stromnetz zu destabilisieren.',
         ['job_notify_blackout_started'] = 'Es wurde in das Kraftwerk eingebrochen.',
         ['start_hack_Laptop'] = 'Drücke ~g~E~s~ um den Laptop zu hacken.',
@@ -14,6 +15,7 @@ Translation = {
     },
     ['en'] = {
         ['open_blackout'] = 'Press ~g~E~s~ to start the Blackout',
+        ['no_online_cops'] = 'There\'re not enough Cops in duty.',
         ['door_success_skillcheck'] = 'Hack the laptop to destabilize the power grid.',
         ['job_notify_blackout_started'] = 'The power plant was broken into.',
         ['start_hack_Laptop'] = 'Press ~g~E~s~ to start hacking the laptop.',
