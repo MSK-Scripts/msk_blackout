@@ -19,6 +19,14 @@ Config.Hotkey = 38 -- deafult: 38 = E
 Config.useDoorlock = false -- Set to true if you want to unlock all Doors while blackout
 Config.DoorlockScript = 'doors_creator' -- 'doors_creator' or 'ox_doorlock'
 ----------------------------------------------------------------
+Config.removeItem = true -- Remove the Item after use
+
+Config.Items = { -- Add those items to your database or inventory
+    ['startDoor'] = 'lockpick',
+    ['hackLaptop'] = 'usb_stick',
+    ['trafos'] = 'hammerwirecutter'
+}
+----------------------------------------------------------------
 Config.Blackout = {
     generalLights = true, -- Set to true turns off all artificial light sources in the map
     vehicleLights = true, -- Set to false ignores Vehicles
@@ -33,7 +41,7 @@ Config.weatherScript = function(state) -- This is a Server Event
 end
 ----------------------------------------------------------------
 Config.Cops = {
-    enable = true,
+    enable = false,
     jobs = {'police', 'fib', 'sheriff'},
     amount = 2 -- Minimum amount of Online Players with Police Job
 }
@@ -83,7 +91,6 @@ Config.SabotageTrafo = {
         enable = true, -- Set false to disable animation while sabotage trafostation
         dict = 'mp_arresting',
         anim = 'a_uncuff',
-        duration = 10 -- in seconds // How long the sabotage will take
     },
     settings = {
         {coords = vec3(2831.52, 1496.69, 24.73), distance = 10.0, blip = {enable = true, label = 'Sabotage', id = 270, color = 1, scale = 0.5}, marker = {enable = true, type = 0, size = {a = 1.0, b = 1.0, c = 1.0}, color = {a = 255, b = 0, c = 0}}},

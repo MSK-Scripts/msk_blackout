@@ -58,43 +58,51 @@ CreateThread(function()
 
 				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.Table_Contains(Config.blacklistedJobs.jobs, playerJob)) then
 					local OnlineCops = 0
+
 					if Config.Cops.enable then
 						OnlineCops = MSK.TriggerCallback('msk_blackout:getCops')
 					end
 
 					if not Config.Cops.enable or (Config.Cops.enable and OnlineCops >= Config.Cops.amount) then
-						if Config.SkillCheck.animation.enable then
-							RequestAnimDict(Config.SkillCheck.animation.dict)
-							while not HasAnimDictLoaded(Config.SkillCheck.animation.dict) do
-								Wait(0)
+						local hasItem = MSK.HasItem(Config.Items['startDoor'])
+
+						if hasItem and hasItem.count > 0 then
+							if Config.SkillCheck.animation.enable then
+								RequestAnimDict(Config.SkillCheck.animation.dict)
+								while not HasAnimDictLoaded(Config.SkillCheck.animation.dict) do
+									Wait(0)
+								end
+								TaskPlayAnim(playerPed, Config.SkillCheck.animation.dict, Config.SkillCheck.animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 							end
-							TaskPlayAnim(playerPed, Config.SkillCheck.animation.dict, Config.SkillCheck.animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
-						end
 
-						local success = false
-						if Config.Skillbar:match('oxlib') then
-							success = lib.skillCheck({Config.SkillCheck.difficulty['1'], Config.SkillCheck.difficulty['2'], {areaSize = 60, speedMultiplier = 2}, Config.SkillCheck.difficulty['3']}, Config.SkillCheck.inputs)
-						elseif Config.Skillbar:match('qbcore') then
-							local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
-							Skillbar.Start({
-								duration = math.random(1000, 5000), -- how long the skillbar runs for
-								pos = math.random(10, 30), -- how far to the right the static box is
-								width = math.random(10, 20), -- how wide the static box is
-							}, function()
-								success = true
-							end, function()
-								success = false
-							end)
-						end
+							local success = false
+							if Config.Skillbar:match('oxlib') then
+								success = lib.skillCheck({Config.SkillCheck.difficulty['1'], Config.SkillCheck.difficulty['2'], {areaSize = 60, speedMultiplier = 2}, Config.SkillCheck.difficulty['3']}, Config.SkillCheck.inputs)
+							elseif Config.Skillbar:match('qbcore') then
+								local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
+								Skillbar.Start({
+									duration = math.random(1000, 5000), -- how long the skillbar runs for
+									pos = math.random(10, 30), -- how far to the right the static box is
+									width = math.random(10, 20), -- how wide the static box is
+								}, function()
+									success = true
+								end, function()
+									success = false
+								end)
+							end
 
-						if Config.SkillCheck.animation.enable then
-							RemoveAnimDict(Config.SkillCheck.animation.dict)
-							ClearPedTasks(playerPed)
-						end
+							if Config.SkillCheck.animation.enable then
+								RemoveAnimDict(Config.SkillCheck.animation.dict)
+								ClearPedTasks(playerPed)
+							end
 
-						if success then
-							startedBlackout = true
-							blackoutTeleport()
+							if success then
+								TriggerServerEvent('msk_blackout:removeItem', hasItem.name)
+								startedBlackout = true
+								blackoutTeleport()
+							end
+						else
+							Config.Notification(nil, Translation[Config.Locale]['no_items']:format(hasItem.label))
 						end
 					else
 						Config.Notification(nil, Translation[Config.Locale]['no_online_cops'])
@@ -156,8 +164,15 @@ CreateThread(function()
 
 				if dist <= 1.5 then
 					if IsControlJustPressed(0, Config.Hotkey) then
-						showHackLaptopHelp = true
-						exports["datacrack"]:Start(4)
+						local hasItem = MSK.HasItem(Config.Items['hackLaptop'])
+
+						if hasItem and hasItem.count > 0 then
+							showHackLaptopHelp = true
+							exports["datacrack"]:Start(4)
+						else
+							teleportOutOfBuilding('return')
+							Config.Notification(nil, Translation[Config.Locale]['no_items']:format(hasItem.label))
+						end
 					end
 				end
 			end
@@ -192,20 +207,47 @@ CreateThread(function()
 						MSK.HelpNotification(Translation[Config.Locale]['sabotage_trafo_loc'])
 
 						if IsControlJustPressed(0, Config.Hotkey) then
-							startedSabotage = true
+							local hasItem = MSK.HasItem(Config.Items['trafos'])
 
-							if Config.SabotageTrafo.animation.enable then
-								RequestAnimDict(Config.SabotageTrafo.animation.dict)
-								while not HasAnimDictLoaded(Config.SabotageTrafo.animation.dict) do
-									Wait(0)
+							if hasItem and hasItem.count > 0 then
+								startedSabotage = true
+
+								if Config.SabotageTrafo.animation.enable then
+									RequestAnimDict(Config.SabotageTrafo.animation.dict)
+									while not HasAnimDictLoaded(Config.SabotageTrafo.animation.dict) do
+										Wait(0)
+									end
+									TaskPlayAnim(playerPed, Config.SabotageTrafo.animation.dict, Config.SabotageTrafo.animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 								end
-								TaskPlayAnim(playerPed, Config.SabotageTrafo.animation.dict, Config.SabotageTrafo.animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
-								Wait(Config.SabotageTrafo.animation.duration * 1000)
-								RemoveAnimDict(Config.SabotageTrafo.animation.dict)
-								ClearPedTasks(playerPed)
 
-								removeBlip(v.coords)
-								table.remove(SabotageLocations, k)
+								local success = false
+								if Config.Skillbar:match('oxlib') then
+									success = lib.skillCheck({Config.SkillCheck.difficulty['1'], Config.SkillCheck.difficulty['2'], {areaSize = 60, speedMultiplier = 2}, Config.SkillCheck.difficulty['3']}, Config.SkillCheck.inputs)
+								elseif Config.Skillbar:match('qbcore') then
+									local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
+									Skillbar.Start({
+										duration = math.random(1000, 5000), -- how long the skillbar runs for
+										pos = math.random(10, 30), -- how far to the right the static box is
+										width = math.random(10, 20), -- how wide the static box is
+									}, function()
+										success = true
+									end, function()
+										success = false
+									end)
+								end
+
+								if Config.SabotageTrafo.animation.enable then
+									RemoveAnimDict(Config.SabotageTrafo.animation.dict)
+									ClearPedTasks(playerPed)
+								end
+
+								if success then
+									TriggerServerEvent('msk_blackout:removeItem', hasItem.name)
+									removeBlip(v.coords)
+									table.remove(SabotageLocations, k)
+								end
+							else
+								Config.Notification(nil, Translation[Config.Locale]['no_items']:format(hasItem.label))
 							end
 						end
 					end
@@ -227,14 +269,17 @@ AddEventHandler("datacrack", function(success)
     hackedLaptop = success
 
 	if success then
+		TriggerServerEvent('msk_blackout:removeItem', Config.Items['hackLaptop'])
 		Config.Notification(nil, Translation[Config.Locale]['success_hack_Laptop'])
 	else
 		showHackLaptopHelp = false
 	end
 end)
 
-teleportOutOfBuilding = function()
+teleportOutOfBuilding = function(stop)
 	SetEntityCoords(PlayerPedId(), Config.startPoint.coords.x, Config.startPoint.coords.y, Config.startPoint.coords.z, false, false, false, true)
+	if stop == 'return' then return stopBlackoutTask() end
+	
 	Config.Notification(nil, Translation[Config.Locale]['sabotage_trafostation'])
 	showSabotageBlips()
 	addSabotagePoints()

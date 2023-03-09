@@ -83,6 +83,20 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
     end
 end)
 
+RegisterServerEvent('msk_blackout:removeItem')
+AddEventHandler('msk_blackout:removeItem', function(item)
+    if not Config.removeItem then return end
+    local src = source
+
+    if Config.Framework:match('ESX') then
+        local xPlayer = ESX.GetPlayerFromId(src)
+        xPlayer.removeInventoryItem(item, 1)
+    elseif Config.Framework:match('QBCore') then
+        local Player = QBCore.Functions.GetPlayer(src)
+        Player.Functions.RemoveItem(item, 1)
+    end
+end)
+
 MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
     local OnlineCops = 0
 

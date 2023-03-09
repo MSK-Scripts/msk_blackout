@@ -12,6 +12,8 @@ Translation = {
         ['sabotage_trafostation'] = 'Sabotiere die Trafostationen die auf der Karte markiert sind.',
         ['sabotage_trafo_loc'] = 'Drücke ~g~E~s~ um den Trafo zu sabotieren.',
         ['successfully_done'] = 'Du hast den Staatsweiten Blackout ausgelöst.',
+
+        ['no_items'] = 'Du hast nicht das passende Item dabei. Du benötigst einen %s.',
     },
     ['en'] = {
         ['open_blackout'] = 'Press ~g~E~s~ to start the Blackout',
@@ -24,5 +26,7 @@ Translation = {
         ['sabotage_trafostation'] = 'Sabotage the transformer stations marked on the map.',
         ['sabotage_trafo_loc'] = 'Press ~g~E~s~ to sabotage the transformer.',
         ['successfully_done'] = 'You caused the statewide blackout.',
+
+        ['no_items'] = 'You don\'t have the right item with you. You need a %s.',
     },
 }
