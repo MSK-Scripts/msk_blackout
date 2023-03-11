@@ -20,7 +20,7 @@ If you want to implement a Listener to other Scripts, so the Job Notifications f
 
 **It works clientside and serverside**
 ```lua
-local isBlackout = false -- Add this at the TOP of your client file
+local isBlackout = false -- Add this at the TOP of your client/server file
 
 blackoutPowerOn = function()
     isBlackout = false
