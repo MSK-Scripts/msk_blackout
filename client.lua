@@ -6,7 +6,7 @@ end
 
 local startedBlackout, startBlackoutTeleport, hackedLaptop = false, false, false
 local showHackLaptopHelp, teleportedOutOfBuilding, startedSabotage = false, false, false
-local addTimeout, setBlackout, sendJobNotify, sendJobBlip = false, false, true, true
+local addTimeout, setBlackout = false, false
 local Blips, JobBlips, SabotageLocations = {}, {}, {}
 
 CreateThread(function()
@@ -347,7 +347,6 @@ stopBlackoutTask = function(success)
 end
 
 stopBlackout = function()
-	sendJobBlip = false
 	TriggerServerEvent('msk_blackout:syncBlackout', false)
 end
 

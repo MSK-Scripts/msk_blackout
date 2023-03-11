@@ -49,8 +49,9 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
     TriggerClientEvent('msk_blackout:setBlackout', -1, state)
 
     if not Config.useDoorlock then return end
+    if not Config.DoorlockScript then return end
     if not (GetResourceState(Config.DoorlockScript) == "started") then
-        return logging('error', 'Doorlock script ' .. Config.DoorlockScript .. ' not found')
+        return logging('error', ('Doorlock Script ^3%s^0 not found'):format(Config.DoorlockScript))
     end
 
     if state then -- If Blackout is enabled
@@ -68,6 +69,8 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
                     end
                 end
             end)
+        else
+            logging('error', ('Unsupported doorlock script: ^3%s^0'):format(Config.DoorlockScript))
         end
     elseif not state then -- If Blackout is disabled
         if Config.DoorlockScript:match('doors_creator') then
@@ -84,6 +87,8 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
                     end
                 end
             end)
+        else
+            logging('error', ('Unsupported doorlock script: ^3%s^0'):format(Config.DoorlockScript))
         end
     end
 end)
