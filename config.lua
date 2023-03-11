@@ -30,7 +30,6 @@ Config.Items = { -- Add those items to your database or inventory
 Config.Blackout = {
     generalLights = true, -- Set to true turns off all artificial light sources in the map
     vehicleLights = true, -- Set to false ignores Vehicles
-
     duration = 1 -- in minutes // Blackout Time
 }
 
@@ -41,9 +40,10 @@ Config.weatherScript = function(state) -- This is a Server Event
 end
 ----------------------------------------------------------------
 Config.Cops = {
-    enable = false,
+    enable = true,
     jobs = {'police', 'fib', 'sheriff'},
-    amount = 2 -- Minimum amount of Online Players with Police Job
+    amount = 1, -- Minimum amount of Online Players with Police Job
+    blip = {enable = true, color = 1},
 }
 
 Config.blacklistedJobs = {

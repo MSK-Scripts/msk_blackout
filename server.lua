@@ -24,6 +24,7 @@ AddEventHandler('msk_blackout:notifyJobs', function()
 
             if MSK.Table_Contains(Config.notifyJobs.jobs, xPlayer.job.name) then
                 Config.Notification(xPlayer.source, Translation[Config.Locale]['job_notify_blackout_started'])
+                TriggerClientEvent('msk_blackout:sendJobBlipNotify', xPlayer.source)
             end
         end
     elseif Config.Framework:match('QBCore') then
@@ -34,6 +35,7 @@ AddEventHandler('msk_blackout:notifyJobs', function()
 
             if MSK.Table_Contains(Config.notifyJobs.jobs, Player.PlayerData.job.name) then
                 Config.Notification(Player.PlayerData.source, Translation[Config.Locale]['job_notify_blackout_started'])
+                TriggerClientEvent('msk_blackout:sendJobBlipNotify', Player.PlayerData.source)
             end
         end
     end
@@ -47,6 +49,9 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
     TriggerClientEvent('msk_blackout:setBlackout', -1, state)
 
     if not Config.useDoorlock then return end
+    if not (GetResourceState(Config.DoorlockScript) == "started") then
+        return logging('error', 'Doorlock script ' .. Config.DoorlockScript .. ' not found')
+    end
 
     if state then -- If Blackout is enabled
         if Config.DoorlockScript:match('doors_creator') then

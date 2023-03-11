@@ -6,8 +6,8 @@ end
 
 local startedBlackout, startBlackoutTeleport, hackedLaptop = false, false, false
 local showHackLaptopHelp, teleportedOutOfBuilding, startedSabotage = false, false, false
-local setBlackout = false
-local Blips, SabotageLocations = {}, {}
+local addTimeout, setBlackout, sendJobNotify, sendJobBlip = false, false, true, true
+local Blips, JobBlips, SabotageLocations = {}, {}, {}
 
 CreateThread(function()
 	local blip = Config.startPoint.blip
@@ -97,8 +97,8 @@ CreateThread(function()
 							end
 
 							if success then
-								TriggerServerEvent('msk_blackout:removeItem', hasItem.name)
 								startedBlackout = true
+								TriggerServerEvent('msk_blackout:removeItem', hasItem.name)
 								blackoutTeleport()
 							end
 						else
@@ -171,6 +171,7 @@ CreateThread(function()
 							exports["datacrack"]:Start(4)
 						else
 							teleportOutOfBuilding('return')
+							sendJobBlipNotify(true)
 							Config.Notification(nil, Translation[Config.Locale]['no_items']:format(hasItem.label))
 						end
 					end
@@ -346,24 +347,58 @@ stopBlackoutTask = function(success)
 end
 
 stopBlackout = function()
+	sendJobBlip = false
 	TriggerServerEvent('msk_blackout:syncBlackout', false)
 end
-
-RegisterCommand('blackouton', function(source, args, raw)
-	stopBlackoutTask(true)
-end)
 
 RegisterNetEvent('msk_blackout:setBlackout')
 AddEventHandler('msk_blackout:setBlackout', function(state)
 	setBlackout = state
 
 	if state then
+		TriggerEvent('msk_blackout:powerOff')
+		TriggerServerEvent('msk_blackout:powerOff')
+
 		addTimeout = MSK.AddTimeout(Config.Blackout.duration * 60000, function()
 			stopBlackout()
 			MSK.DelTimeout(addTimeout)
 		end)
+	else
+		stopBlackout()
+		MSK.DelTimeout(addTimeout)
+		TriggerEvent('msk_blackout:powerOn')
+		TriggerServerEvent('msk_blackout:powerOn')
 	end
 end)
+
+AddEventHandler('msk_blackout:powerOff', function()
+	sendJobBlipNotify(true)
+end)
+
+RegisterNetEvent('msk_blackout:sendJobBlipNotify')
+AddEventHandler('msk_blackout:sendJobBlipNotify', function()
+	sendJobBlipNotify()
+end)
+
+sendJobBlipNotify = function(notify)
+	CreateThread(function()
+        for k, v in pairs(JobBlips) do
+            RemoveBlip(v)
+            JobBlips = {}
+        end
+
+		if notify then return end
+
+		if Config.Cops.blip.enable then
+			local blip = AddBlipForRadius(Config.startPoint.coords.x, Config.startPoint.coords.y, Config.startPoint.coords.z, 50.0)
+
+			SetBlipColour(blip, Config.Cops.blip.color)
+			SetBlipAlpha(blip, 128)
+			
+			table.insert(JobBlips, blip)
+		end
+	end)
+end
 
 if not Config.useWeatherScript then
 	CreateThread(function()
