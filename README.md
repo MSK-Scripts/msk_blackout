@@ -35,7 +35,8 @@ AddEventHandler('msk_blackout:powerOff', blackoutPowerOff)
 ```
 **Example**
 ```lua
-if not isBlackout then -- Only if Power is ON the Notification to Cops will be triggered
+ -- Only if Power is ON the Notification to Cops will be triggered
+if not isBlackout then
     TriggerClientEvent('notifyCops', -1)
 end
 ```
