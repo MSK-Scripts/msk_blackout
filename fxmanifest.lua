@@ -4,7 +4,7 @@ games { 'gta5' }
 author 'Musiker15 - MSK Scripts'
 name 'msk_blackout'
 description 'Weather Blackout Miniheist'
-version '1.5.1'
+version '1.6'
 
 lua54 'yes'
 

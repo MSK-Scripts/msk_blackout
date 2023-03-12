@@ -19,6 +19,12 @@ Config.Hotkey = 38 -- deafult: 38 = E
 Config.useDoorlock = false -- Set to true if you want to unlock all Doors while blackout
 Config.DoorlockScript = 'doors_creator' -- 'doors_creator' or 'ox_doorlock'
 ----------------------------------------------------------------
+Config.Command = {
+    enable = true, -- Set to false if you don't want to use the Commands
+    groups = {'superadmin', 'admin', 'god'}, 
+    command = 'toggleblackout' -- Toggles blackout on or off
+}
+----------------------------------------------------------------
 Config.removeItem = true -- Remove the Item after use
 
 Config.Items = { -- Add those items to your database or inventory

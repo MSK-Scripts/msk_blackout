@@ -12,6 +12,8 @@ elseif Config.Framework:match('QBCore') then -- QBCore Framework
     QBCore = exports['qb-core']:GetCoreObject()
 end
 
+local isBlackout = false
+
 RegisterServerEvent('msk_blackout:notifyJobs')
 AddEventHandler('msk_blackout:notifyJobs', function()
     if not Config.notifyJobs.enable then return end
@@ -43,10 +45,17 @@ end)
 
 RegisterServerEvent('msk_blackout:syncBlackout')
 AddEventHandler('msk_blackout:syncBlackout', function(state)
+    logging('debug', 'syncBlackout', state)
     if Config.useWeatherScript then
         Config.weatherScript(state)
     end
     TriggerClientEvent('msk_blackout:setBlackout', -1, state)
+
+    if state then -- If Blackout is enabled
+        TriggerEvent('msk_blackout:powerOff')
+    elseif not state then -- If Blackout is disabled
+        TriggerEvent('msk_blackout:powerOn')
+    end
 
     if not Config.useDoorlock then return end
     if not Config.DoorlockScript then return end
@@ -134,6 +143,21 @@ MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
 
     cb(OnlineCops)
 end)
+
+if Config.Command.enable then
+    MSK.RegisterCommand(Config.Command.command, Config.Command.groups, function(source, args, raw)
+        if isBlackout then 
+            TriggerEvent('msk_blackout:syncBlackout', false)
+            isBlackout = false
+        else
+            TriggerEvent('msk_blackout:syncBlackout', true)
+            isBlackout = true
+        end
+    end, true, false, {help = 'Toggle Blackout'})
+end
+
+AddEventHandler('msk_blackout:powerOn', function() isBlackout = false logging('debug', 'Toggled Blackout off') end)
+AddEventHandler('msk_blackout:powerOff', function() isBlackout = true logging('debug', 'Toggled Blackout on') end)
 
 logging = function(code, ...)
     if Config.Debug then

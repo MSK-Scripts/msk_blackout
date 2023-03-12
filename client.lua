@@ -1,5 +1,10 @@
 if Config.Framework:match('ESX') then -- ESX Framework
     ESX = exports["es_extended"]:getSharedObject()
+
+	RegisterNetEvent('esx:setJob')
+	AddEventHandler('esx:setJob', function(job)
+		ESX.GetPlayerData().job = job
+	end)
 elseif Config.Framework:match('QBCore') then -- QBCore Framework
     QBCore = exports['qb-core']:GetCoreObject()
 end
@@ -170,7 +175,7 @@ CreateThread(function()
 							showHackLaptopHelp = true
 							exports["datacrack"]:Start(4)
 						else
-							teleportOutOfBuilding('return')
+							teleportOutOfBuilding(true)
 							sendJobBlipNotify(true)
 							Config.Notification(nil, Translation[Config.Locale]['no_items']:format(hasItem.label))
 						end
@@ -279,7 +284,7 @@ end)
 
 teleportOutOfBuilding = function(stop)
 	SetEntityCoords(PlayerPedId(), Config.startPoint.coords.x, Config.startPoint.coords.y, Config.startPoint.coords.z, false, false, false, true)
-	if stop == 'return' then return stopBlackoutTask() end
+	if stop then return stopBlackoutTask() end
 	
 	Config.Notification(nil, Translation[Config.Locale]['sabotage_trafostation'])
 	showSabotageBlips()
@@ -346,32 +351,27 @@ stopBlackoutTask = function(success)
 	end
 end
 
-stopBlackout = function()
-	TriggerServerEvent('msk_blackout:syncBlackout', false)
-end
-
 RegisterNetEvent('msk_blackout:setBlackout')
 AddEventHandler('msk_blackout:setBlackout', function(state)
 	setBlackout = state
 
 	if state then
 		TriggerEvent('msk_blackout:powerOff')
-		TriggerServerEvent('msk_blackout:powerOff')
-
 		addTimeout = MSK.AddTimeout(Config.Blackout.duration * 60000, function()
-			stopBlackout()
-			MSK.DelTimeout(addTimeout)
+			TriggerServerEvent('msk_blackout:syncBlackout', false)
 		end)
 	else
-		stopBlackout()
-		MSK.DelTimeout(addTimeout)
 		TriggerEvent('msk_blackout:powerOn')
-		TriggerServerEvent('msk_blackout:powerOn')
+		MSK.DelTimeout(addTimeout)
 	end
 end)
 
 AddEventHandler('msk_blackout:powerOff', function()
 	sendJobBlipNotify(true)
+end)
+
+AddEventHandler('msk_blackout:powerOn', function()
+	logging('debug', 'powerOn')
 end)
 
 RegisterNetEvent('msk_blackout:sendJobBlipNotify')
@@ -425,3 +425,9 @@ logging = function(code, ...)
         MSK.logging(script, code, ...)
     end
 end
+
+AddEventHandler('onResourceStop', function(resource)
+    if GetCurrentResourceName() == resource then
+        MSK.DelTimeout(addTimeout)
+    end
+end)
