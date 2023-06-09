@@ -1,11 +1,3 @@
-AddEventHandler('onResourceStart', function(resource)
-    if GetCurrentResourceName() ~= 'msk_blackout' then
-        print('^1Please rename the Script to^3 msk_blackout^0!')
-        print('^1Server will be shutdown^0!')
-        os.exit()
-    end
-end)
-
 if Config.Framework:match('ESX') then -- ESX Framework
     ESX = exports["es_extended"]:getSharedObject()
 elseif Config.Framework:match('QBCore') then -- QBCore Framework
