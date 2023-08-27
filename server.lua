@@ -4,7 +4,7 @@ elseif Config.Framework:match('QBCore') then -- QBCore Framework
     QBCore = exports['qb-core']:GetCoreObject()
 end
 
-local isBlackout = false
+local isBlackout, blackoutInProgress = false, false
 
 RegisterServerEvent('msk_blackout:notifyJobs')
 AddEventHandler('msk_blackout:notifyJobs', function()
@@ -45,6 +45,11 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
 
     if state then -- If Blackout is enabled
         TriggerEvent('msk_blackout:powerOff')
+
+        blackoutInProgress = true
+        local blackoutTimeout = MSK.AddTimeout(Config.Timeout * 60000, function()
+			blackoutInProgress = false
+		end)
     elseif not state then -- If Blackout is disabled
         TriggerEvent('msk_blackout:powerOn')
     end
@@ -136,6 +141,10 @@ MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
     cb(OnlineCops)
 end)
 
+MSK.RegisterCallback('msk_blackout:isBlackoutInProgress', function(source, cb)
+    cb(blackoutInProgress)
+end)
+
 if Config.Command.enable then
     MSK.RegisterCommand(Config.Command.command, Config.Command.groups, function(source, args, raw)
         if isBlackout then 
@@ -152,10 +161,8 @@ AddEventHandler('msk_blackout:powerOn', function() isBlackout = false logging('d
 AddEventHandler('msk_blackout:powerOff', function() isBlackout = true logging('debug', 'Toggled Blackout on') end)
 
 logging = function(code, ...)
-    if Config.Debug then
-        local script = "[^2"..GetCurrentResourceName().."^0]"
-        MSK.logging(script, code, ...)
-    end
+    if not Config.Debug then return end
+    MSK.logging(code, ...)
 end
 
 GithubUpdater = function()
@@ -164,7 +171,7 @@ GithubUpdater = function()
     end
     
     local CurrentVersion = GetCurrentVersion()
-    local resourceName = "^4["..GetCurrentResourceName().."]^0"
+    local resourceName = "[^2"..GetCurrentResourceName().."^0]"
 
     if Config.VersionChecker then
         PerformHttpRequest('https://raw.githubusercontent.com/MSK-Scripts/msk_blackout/main/VERSION', function(Error, NewestVersion, Header)
