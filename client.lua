@@ -1,9 +1,14 @@
 if Config.Framework:match('ESX') then -- ESX Framework
     ESX = exports["es_extended"]:getSharedObject()
 
+	RegisterNetEvent('esx:playerLoaded')
+	AddEventHandler('esx:playerLoaded', function(xPlayer, isNew, skin)
+		ESX.PlayerData = xPlayer
+	end)
+
 	RegisterNetEvent('esx:setJob')
 	AddEventHandler('esx:setJob', function(job)
-		ESX.GetPlayerData().job = job
+		ESX.PlayerData.job = job
 	end)
 elseif Config.Framework:match('QBCore') then -- QBCore Framework
     QBCore = exports['qb-core']:GetCoreObject()
@@ -41,7 +46,7 @@ CreateThread(function()
 		
 		if Config.blacklistedJobs.enable then
 			if Config.Framework:match('ESX') then -- ESX Framework
-				playerJob = ESX.GetPlayerData().job.name
+				playerJob = ESX.PlayerData.job.name
 			elseif Config.Framework:match('QBCore') then -- QBCore Framework
 				playerJob = QBCore.Functions.GetPlayerData().job.name
 			end
