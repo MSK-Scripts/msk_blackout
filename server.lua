@@ -1,6 +1,4 @@
-if Config.Framework:match('ESX') then -- ESX Framework
-    ESX = exports["es_extended"]:getSharedObject()
-elseif Config.Framework:match('QBCore') then -- QBCore Framework
+if Config.Framework:match('QBCore') then -- QBCore Framework
     QBCore = exports['qb-core']:GetCoreObject()
 end
 
@@ -11,11 +9,9 @@ AddEventHandler('msk_blackout:notifyJobs', function()
     if not Config.notifyJobs.enable then return end
 
     if Config.Framework:match('ESX') then
-        local xPlayers = ESX.GetPlayers()
+        local xPlayers = ESX.GetExtendedPlayers()
 
-        for i = 1, #xPlayers do
-            local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-
+        for k, xPlayer in pairs(xPlayers) do
             if MSK.Table_Contains(Config.notifyJobs.jobs, xPlayer.job.name) then
                 Config.Notification(xPlayer.source, Translation[Config.Locale]['job_notify_blackout_started'])
                 TriggerClientEvent('msk_blackout:sendJobBlipNotify', xPlayer.source)
@@ -24,8 +20,8 @@ AddEventHandler('msk_blackout:notifyJobs', function()
     elseif Config.Framework:match('QBCore') then
         local Players = QBCore.Functions.GetQBPlayers()
 
-        for i = 1, #Players do
-            local Player = QBCore.Functions.GetPlayer(Players[i])
+        for k, v in pairs(Players) do
+            local Player = QBCore.Functions.GetPlayer(v)
 
             if MSK.Table_Contains(Config.notifyJobs.jobs, Player.PlayerData.job.name) then
                 Config.Notification(Player.PlayerData.source, Translation[Config.Locale]['job_notify_blackout_started'])
@@ -117,11 +113,9 @@ MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
     local OnlineCops = 0
 
     if Config.Framework:match('ESX') then
-        local xPlayers = ESX.GetPlayers()
+        local xPlayers = ESX.GetExtendedPlayers()
 
-        for i = 1, #xPlayers do
-            local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-
+        for k, xPlayer in pairs(xPlayers) do
             if MSK.Table_Contains(Config.Cops.jobs, xPlayer.job.name) then
                 OnlineCops = OnlineCops + 1
             end
@@ -129,8 +123,8 @@ MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
     elseif Config.Framework:match('QBCore') then
         local Players = QBCore.Functions.GetQBPlayers()
 
-        for i = 1, #Players do
-            local Player = QBCore.Functions.GetPlayer(Players[i])
+        for k, v in pairs(Players) do
+            local Player = QBCore.Functions.GetPlayer(v)
 
             if MSK.Table_Contains(Config.Cops.jobs, Player.PlayerData.job.name) then
                 OnlineCops = OnlineCops + 1

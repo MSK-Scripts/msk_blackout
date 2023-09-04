@@ -13,7 +13,7 @@ Config.Notification = function(source, message)
     end
 end
 ----------------------------------------------------------------
-Config.Framework = 'ESX' -- 'ESX' or 'QBCore'
+Config.Framework = 'ESX' -- 'ESX' or 'QBCore' // Remove es_extended from fxmanifest.lua if you are using QBCore
 Config.Hotkey = 38 -- deafult: 38 = E
 
 Config.Timeout = 10 -- in minutes // Timeout before the next blackout can be started
