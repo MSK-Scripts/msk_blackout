@@ -37,6 +37,7 @@ CreateThread(function()
 				while not ESX.PlayerData.job do Wait(0) end
 				playerJob = ESX.PlayerData.job.name
 			elseif Config.Framework:match('QBCore') then -- QBCore Framework
+				while not QBCore.Functions.GetPlayerData().job do Wait(0) end
 				playerJob = QBCore.Functions.GetPlayerData().job.name
 			end
 		end

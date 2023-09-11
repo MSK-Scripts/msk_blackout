@@ -20,9 +20,7 @@ AddEventHandler('msk_blackout:notifyJobs', function()
     elseif Config.Framework:match('QBCore') then
         local Players = QBCore.Functions.GetQBPlayers()
 
-        for k, v in pairs(Players) do
-            local Player = QBCore.Functions.GetPlayer(v)
-
+        for k, Player in pairs(Players) do
             if MSK.Table_Contains(Config.notifyJobs.jobs, Player.PlayerData.job.name) then
                 Config.Notification(Player.PlayerData.source, Translation[Config.Locale]['job_notify_blackout_started'])
                 TriggerClientEvent('msk_blackout:sendJobBlipNotify', Player.PlayerData.source)
@@ -123,9 +121,7 @@ MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
     elseif Config.Framework:match('QBCore') then
         local Players = QBCore.Functions.GetQBPlayers()
 
-        for k, v in pairs(Players) do
-            local Player = QBCore.Functions.GetPlayer(v)
-
+        for k, Player in pairs(Players) do
             if MSK.Table_Contains(Config.Cops.jobs, Player.PlayerData.job.name) then
                 OnlineCops = OnlineCops + 1
             end
