@@ -107,7 +107,7 @@ AddEventHandler('msk_blackout:removeItem', function(item)
     end
 end)
 
-MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
+MSK.Register('msk_blackout:getCops', function(source)
     local OnlineCops = 0
 
     if Config.Framework:match('ESX') then
@@ -128,11 +128,11 @@ MSK.RegisterCallback('msk_blackout:getCops', function(source, cb)
         end
     end
 
-    cb(OnlineCops)
+    return OnlineCops
 end)
 
-MSK.RegisterCallback('msk_blackout:isBlackoutInProgress', function(source, cb)
-    cb(blackoutInProgress)
+MSK.Register('msk_blackout:isBlackoutInProgress', function(source)
+    return blackoutInProgress
 end)
 
 if Config.Command.enable then
