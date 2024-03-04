@@ -57,13 +57,13 @@ CreateThread(function()
 				MSK.HelpNotification(Translation[Config.Locale]['open_blackout'])
 
 				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.Table_Contains(Config.blacklistedJobs.jobs, playerJob)) then
-					local blackoutInProgress = MSK.TriggerCallback('msk_blackout:isBlackoutInProgress')
+					local blackoutInProgress = MSK.Trigger('msk_blackout:isBlackoutInProgress')
 
 					if not blackoutInProgress then
 						local OnlineCops = 0
 
 						if Config.Cops.enable then
-							OnlineCops = MSK.TriggerCallback('msk_blackout:getCops')
+							OnlineCops = MSK.Trigger('msk_blackout:getCops')
 						end
 
 						if not Config.Cops.enable or (Config.Cops.enable and OnlineCops >= Config.Cops.amount) then
@@ -422,7 +422,7 @@ end
 
 logging = function(code, ...)
     if not Config.Debug then return end
-    MSK.logging(code, ...)
+    MSK.Logging(code, ...)
 end
 
 AddEventHandler('onResourceStop', function(resource)

@@ -152,7 +152,7 @@ AddEventHandler('msk_blackout:powerOff', function() isBlackout = true logging('d
 
 logging = function(code, ...)
     if not Config.Debug then return end
-    MSK.logging(code, ...)
+    MSK.Logging(code, ...)
 end
 
 GithubUpdater = function()
