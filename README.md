@@ -22,8 +22,8 @@ if type(_source) == 'string' and _source == '' or type(_source) == 'number' and 
 ```
 * It should look like this:
 ```lua
-RegisterServerEvent('dinerov_weather_sync:ForceUpdate')
-AddEventHandler('dinerov_weather_sync:ForceUpdate', function(data)
+RegisterServerEvent('cd_easytime:ForceUpdate')
+AddEventHandler('cd_easytime:ForceUpdate', function(data)
     local _source = source
     if type(_source) == 'string' and _source == '' or type(_source) == 'number' and PermissionsCheck(_source) then
         if data.hours then
