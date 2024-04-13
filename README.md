@@ -16,7 +16,7 @@ Preview: https://youtu.be/lS1PQw3oq8k
 If you don't want to use the `ox_lib` Skillbar then remove it from `fxmanifest.lua`
 
 ### cd_easytime
-* Go to cd_easytime/server/server.lua to line 71 and change this line to the following:
+* Go to `cd_easytime/server/server.lua` to line 71 and change this line to the following:
 ```lua
 if type(_source) == 'string' and _source == '' or type(_source) == 'number' and PermissionsCheck(_source) then
 ```
