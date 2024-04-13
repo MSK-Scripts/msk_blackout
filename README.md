@@ -15,6 +15,23 @@ Preview: https://youtu.be/lS1PQw3oq8k
 
 If you don't want to use the `ox_lib` Skillbar then remove it from `fxmanifest.lua`
 
+### cd_easytime
+* Go to cd_easytime/server/server.lua to line 71 and change this line to the following:
+```lua
+if type(_source) == 'string' and _source == '' or type(_source) == 'number' and PermissionsCheck(_source) then
+```
+* It should look like this:
+```lua
+RegisterServerEvent('dinerov_weather_sync:ForceUpdate')
+AddEventHandler('dinerov_weather_sync:ForceUpdate', function(data)
+    local _source = source
+    if type(_source) == 'string' and _source == '' or type(_source) == 'number' and PermissionsCheck(_source) then
+        if data.hours then
+            self.mins = 00
+            self.hours = data.hours
+        end
+```
+
 ## Events
 If you want to implement a Listener to other Scripts, so the Job Notifications f.e. Robberies won't get triggert then add this to your scripts.
 
