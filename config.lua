@@ -18,39 +18,44 @@ Config.Hotkey = 38 -- deafult: 38 = E
 
 Config.Timeout = 10 -- in minutes // Timeout before the next blackout can be started
 ----------------------------------------------------------------
-Config.useDoorlock = false -- Set to true if you want to unlock all Doors while blackout
+Config.useDoorlock = true -- Set to true if you want to unlock all Doors while blackout
 Config.DoorlockScript = 'doors_creator' -- 'doors_creator' or 'ox_doorlock'
 ----------------------------------------------------------------
 Config.Command = {
     enable = true, -- Set to false if you don't want to use the Commands
-    groups = {'superadmin', 'admin', 'god'}, 
+    groups = {'superadmin', 'admin'}, 
     command = 'toggleblackout' -- Toggles blackout on or off
 }
 ----------------------------------------------------------------
 Config.removeItem = true -- Remove the Item after use
 
-Config.Items = { -- Add those items to your database or inventory
+Config.Items = { -- Add those items to your database or inventory or insert your own items
     ['startDoor'] = 'lockpick',
     ['hackLaptop'] = 'usb_stick',
-    ['trafos'] = 'hammerwirecutter'
+    ['trafos'] = 'boltcutter'
 }
 ----------------------------------------------------------------
 Config.Blackout = {
     generalLights = true, -- Set to true turns off all artificial light sources in the map
-    vehicleLights = true, -- Set to false ignores Vehicles
-    duration = 1 -- in minutes // Blackout Time
+    vehicleLights = false, -- Set to false ignores Vehicles
+    duration = 10 -- in minutes // Blackout Time
 }
 
 Config.useWeatherScript = true -- Set false the Blackout does not work and add your Event below
 Config.weatherScript = function(state) -- This is a Server Event
-    TriggerClientEvent('vSync:updateWeather', -1, 'CLEAR', state) -- vSync
-    --exports["qb-weathersync"]:setBlackout(state) -- qb-weathersync
+    -- qb-weathersync
+    -- exports["qb-weathersync"]:setBlackout(state)
+
+    -- cd_easytime
+    local weather = exports['cd_easytime']:GetWeather()
+    weather.blackout = state
+    TriggerEvent('cd_easytime:ForceUpdate', weather)
 end
 ----------------------------------------------------------------
 Config.Cops = {
-    enable = true,
+    enable = false,
     jobs = {'police', 'fib', 'sheriff'},
-    amount = 1, -- Minimum amount of Online Players with Police Job
+    amount = 2, -- Minimum amount of Online Players with Police Job
     blip = {enable = true, color = 1},
 }
 

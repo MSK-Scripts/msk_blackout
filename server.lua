@@ -2,7 +2,7 @@ if Config.Framework:match('QBCore') then -- QBCore Framework
     QBCore = exports['qb-core']:GetCoreObject()
 end
 
-local isBlackout, blackoutInProgress = false, false
+local isBlackout, blackoutInProgress, setBlackoutTimeout = false, false, false
 
 RegisterServerEvent('msk_blackout:notifyJobs')
 AddEventHandler('msk_blackout:notifyJobs', function()
@@ -32,9 +32,11 @@ end)
 RegisterServerEvent('msk_blackout:syncBlackout')
 AddEventHandler('msk_blackout:syncBlackout', function(state)
     logging('debug', 'syncBlackout', state)
+
     if Config.useWeatherScript then
         Config.weatherScript(state)
     end
+
     TriggerClientEvent('msk_blackout:setBlackout', -1, state)
 
     if state then -- If Blackout is enabled
@@ -44,7 +46,7 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
         local blackoutTimeout = MSK.AddTimeout(Config.Timeout * 60000, function()
 			blackoutInProgress = false
 		end)
-    elseif not state then -- If Blackout is disabled
+    else -- If Blackout is disabled
         TriggerEvent('msk_blackout:powerOn')
     end
 
@@ -72,7 +74,7 @@ AddEventHandler('msk_blackout:syncBlackout', function(state)
         else
             logging('error', ('Unsupported doorlock script: ^3%s^0'):format(Config.DoorlockScript))
         end
-    elseif not state then -- If Blackout is disabled
+    else -- If Blackout is disabled
         if Config.DoorlockScript:match('doors_creator') then
             local doors = exports["doors_creator"]:getAllDoors()
             for k, doorData in pairs(doors) do
@@ -114,7 +116,7 @@ MSK.Register('msk_blackout:getCops', function(source)
         local xPlayers = ESX.GetExtendedPlayers()
 
         for k, xPlayer in pairs(xPlayers) do
-            if MSK.Table_Contains(Config.Cops.jobs, xPlayer.job.name) then
+            if MSK.TableContains(Config.Cops.jobs, xPlayer.job.name) then
                 OnlineCops = OnlineCops + 1
             end
         end
@@ -122,7 +124,7 @@ MSK.Register('msk_blackout:getCops', function(source)
         local Players = QBCore.Functions.GetQBPlayers()
 
         for k, Player in pairs(Players) do
-            if MSK.Table_Contains(Config.Cops.jobs, Player.PlayerData.job.name) then
+            if MSK.TableContains(Config.Cops.jobs, Player.PlayerData.job.name) then
                 OnlineCops = OnlineCops + 1
             end
         end
@@ -139,16 +141,28 @@ if Config.Command.enable then
     MSK.RegisterCommand(Config.Command.command, Config.Command.groups, function(source, args, raw)
         if isBlackout then 
             TriggerEvent('msk_blackout:syncBlackout', false)
-            isBlackout = false
         else
             TriggerEvent('msk_blackout:syncBlackout', true)
-            isBlackout = true
         end
     end, true, false, {help = 'Toggle Blackout'})
 end
 
-AddEventHandler('msk_blackout:powerOn', function() isBlackout = false logging('debug', 'Toggled Blackout off') end)
-AddEventHandler('msk_blackout:powerOff', function() isBlackout = true logging('debug', 'Toggled Blackout on') end)
+AddEventHandler('msk_blackout:powerOn', function() 
+    logging('debug', 'Toggled Blackout off') 
+    isBlackout = false 
+
+    MSK.DelTimeout(setBlackoutTimeout)
+end)
+
+AddEventHandler('msk_blackout:powerOff', function() 
+    logging('debug', 'Toggled Blackout on') 
+    isBlackout = true 
+
+    setBlackoutTimeout = MSK.AddTimeout(Config.Blackout.duration * 60000, function()
+        isBlackout = false
+        TriggerEvent('msk_blackout:syncBlackout', false)
+    end)
+end)
 
 logging = function(code, ...)
     if not Config.Debug then return end
@@ -161,7 +175,7 @@ GithubUpdater = function()
     end
     
     local CurrentVersion = GetCurrentVersion()
-    local resourceName = "[^2"..GetCurrentResourceName().."^0]"
+    local resourceName = "^0[^2"..GetCurrentResourceName().."^0]"
 
     if Config.VersionChecker then
         PerformHttpRequest('https://raw.githubusercontent.com/MSK-Scripts/msk_blackout/main/VERSION', function(Error, NewestVersion, Header)

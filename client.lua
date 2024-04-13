@@ -4,7 +4,7 @@ end
 
 local startedBlackout, startBlackoutTeleport, hackedLaptop = false, false, false
 local showHackLaptopHelp, teleportedOutOfBuilding, startedSabotage = false, false, false
-local addTimeout, setBlackout = false, false
+local setBlackout = false
 local Blips, JobBlips, SabotageLocations = {}, {}, {}
 
 CreateThread(function()
@@ -56,7 +56,7 @@ CreateThread(function()
 			if dist <= 2.5 and not IsPlayerDead(PlayerId()) and not startedBlackout then
 				MSK.HelpNotification(Translation[Config.Locale]['open_blackout'])
 
-				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.Table_Contains(Config.blacklistedJobs.jobs, playerJob)) then
+				if IsControlJustPressed(0, Config.Hotkey) and (not Config.blacklistedJobs.enable or not MSK.TableContains(Config.blacklistedJobs.jobs, playerJob)) then
 					local blackoutInProgress = MSK.Trigger('msk_blackout:isBlackoutInProgress')
 
 					if not blackoutInProgress then
@@ -314,8 +314,8 @@ showSabotageBlips = function()
 	CreateThread(function()
         for k, v in pairs(Blips) do
             RemoveBlip(v.blip)
-            Blips = {}
         end
+		Blips = {}
 
 		for k, v in pairs(Config.SabotageTrafo.settings) do
 			if v.blip.enable then
@@ -342,9 +342,9 @@ stopBlackoutTask = function(success)
 	SabotageLocations = {}
 
 	for k, v in pairs(Blips) do
-		RemoveBlip(v)
-		Blips = {}
+		RemoveBlip(v.blip)
 	end
+	Blips = {}
 
 	if success then
 		TriggerServerEvent('msk_blackout:syncBlackout', true)
@@ -358,21 +358,18 @@ AddEventHandler('msk_blackout:setBlackout', function(state)
 
 	if state then
 		TriggerEvent('msk_blackout:powerOff')
-		addTimeout = MSK.AddTimeout(Config.Blackout.duration * 60000, function()
-			TriggerServerEvent('msk_blackout:syncBlackout', false)
-		end)
 	else
 		TriggerEvent('msk_blackout:powerOn')
-		MSK.DelTimeout(addTimeout)
 	end
 end)
 
 AddEventHandler('msk_blackout:powerOff', function()
+	logging('debug', 'Blackout powerOff')
 	sendJobBlipNotify(true)
 end)
 
 AddEventHandler('msk_blackout:powerOn', function()
-	logging('debug', 'powerOn')
+	logging('debug', 'Blackout powerOn')
 end)
 
 RegisterNetEvent('msk_blackout:sendJobBlipNotify')
@@ -384,8 +381,8 @@ sendJobBlipNotify = function(notify)
 	CreateThread(function()
         for k, v in pairs(JobBlips) do
             RemoveBlip(v)
-            JobBlips = {}
         end
+		JobBlips = {}
 
 		if notify then return end
 
@@ -424,9 +421,3 @@ logging = function(code, ...)
     if not Config.Debug then return end
     MSK.Logging(code, ...)
 end
-
-AddEventHandler('onResourceStop', function(resource)
-    if GetCurrentResourceName() == resource then
-        MSK.DelTimeout(addTimeout)
-    end
-end)
