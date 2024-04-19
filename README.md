@@ -39,16 +39,13 @@ If you want to implement a Listener to other Scripts, so the Job Notifications f
 ```lua
 local isBlackout = false -- Add this at the TOP of your client/server file
 
-blackoutPowerOn = function()
+AddEventHandler('msk_blackout:powerOn', function()
     isBlackout = false
-end
+end)
 
-blackoutPowerOff = function()
+AddEventHandler('msk_blackout:powerOff', function()
     isBlackout = true
-end
-
-AddEventHandler('msk_blackout:powerOn', blackoutPowerOn)
-AddEventHandler('msk_blackout:powerOff', blackoutPowerOff)
+end)
 ```
 **Example**
 ```lua
